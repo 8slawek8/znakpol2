@@ -1,0 +1,11 @@
+<div class="panel panel-default">
+  <div class="panel-heading"><strong>Filtry</strong></div>
+  <div class="panel-body">
+    <form action="." method='GET'>
+      {% for field in form %}
+      {% include "default_field_form.html" %}
+      {% endfor %}
+      <button class="btn1 btn-block btn-default">Szukaj</button>
+    </form>
+  </div>
+</div>

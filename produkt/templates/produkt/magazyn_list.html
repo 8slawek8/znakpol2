@@ -1,0 +1,72 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="container-fluid">
+  <div class="row">
+    <div class="col-sm-2">
+      {% include "default_filter_form.html" %}
+    </div>
+    <div class="col-sm-10">
+      <div class="panel panel-default">
+        <div class="panel-heading">
+          <strong>
+            <center><h2><p><em> Magazyn </em></p></h2></center>
+            {% if request.user.pracownik.stanowisko.name == 'Magazynier' %}
+            <a class="btn2 btn-success glyphicon glyphicon-plus" href="{% url 'magazyn-dodaj' %}"> dodaj produkt do magazynu </a>
+            {% endif %}
+          </strong>
+        </div>
+          <div class="panel-body">
+            <table class="table table-striped">
+              <thead>
+                <tr style="text-align: center">
+                  <th>Lp.</th>
+                  <th>Produkt</th>
+                  <th>Stan magazynowy</th>
+                </tr>
+              </thead>
+              <tbody>
+                {% for i in object_list %}
+                <tr>
+                  <td>{{ forloop.counter }}</td>
+                  <td style="width: 30%">
+                    {% if i.obraz %}
+                    <img class="produkt" src="{{ i.obraz.url }}">
+                    {% endif %}
+                    {% if request.user.pracownik.stanowisko.name == 'Magazynier' %}
+                    <div class="dropdown">
+                      <button class="btnd btn-primary dropdown-toggle" type="button" data-toggle="dropdown">{{ i.produkt }}
+                        <span class="caret"></span></button>
+                      <ul class="dropdown-menu dropdown-menud">
+                        <li><a href="{% url 'magazyn-edytuj' i.id %}">edytuj</a></li>
+                        <li><a href="{% url 'magazyn-usun' i.id %}">usuń</a></li>
+                      </ul>
+                    </div> 
+                    {% else %}
+                    <br>
+                    <strong>{{ i.produkt }}</strong>
+                    {% endif %}
+                    {% if not i.wolny %}
+                    <h3 style="color: red">Produkt nie jest dostępny</h3>
+                    {% endif %}
+                  </td>
+                  <td style="text-align: left">
+                    <div class="list-group">
+                      <a href="#" class="list-group-item"><strong>Wolna ilość produktu: </strong> {{ i.wolny }} 
+                        <span class="glyphicon glyphicon-signal" style="color: {{ i.poziom }}">
+                        </span>
+                      </a>
+                      <a href="#" class="list-group-item"><strong>Zamówiona ilość produktu (klient): </strong>{{ i.zamowiony }}</a>
+                      <a href="#" class="list-group-item"><strong>Sprzedana ilość produktu: </strong>{{ i.sprzedany }}</a>
+                    </div>
+                  </td>
+                </tr>
+                {% endfor %}
+              </tbody>
+            </table>
+          </div>
+      </div>
+    </div>
+  </div>
+</div>
+{% endblock %}

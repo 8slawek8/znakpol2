@@ -1,0 +1,9 @@
+{% extends "base.html" %}
+
+{% block content %}
+<form action="." method="post">
+{% csrf_token %}
+<h2> Czy jesteś pewien, że chcesz usunąć obiekt: {{ object }}</h2>
+<button type="submit" class="btn btn-danger">Usuń</button>
+</form>
+{% endblock %}

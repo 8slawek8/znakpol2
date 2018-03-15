@@ -1,0 +1,146 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="container-fluid">
+  <div class="row" style="padding-bottom: 5%; padding-top: 5%">
+    <div class="col-sm-5">
+      <h2 style="display: inline"> Zamówienie numer {{ object.nr_zamowienia }} </h2>
+      {% if request.user.pracownik %}
+      <a class="btn3 glyphicon glyphicon-edit" href="{% url 'zamowienie-edytuj' object.id %}?next={{request.get_full_path}}"> </a>
+      <a class="btn3 glyphicon glyphicon-minus" href="{% url 'zamowienie-usun' object.id %}"> </a>
+      {% endif %}
+      <br> <span style="color: {{ object.zrealizowane|yesno:'green,red' }}">{{ object.zrealizowane|yesno:'zrealizowana,niezrealizowana' }}</span>
+      {% if request.user.pracownik and not object.zrealizowane %}
+      <a class="btn3 glyphicon glyphicon-ok" href="{% url 'zamowienie-zrealizowane' object.id %}?next={{request.get_full_path}}"> </a>
+      {% endif %}
+      {% if object.realizacja_kto %}<p><em>przez:</em> {{ object.realizacja_kto }}</p>{% endif %}
+      <p><em>Okres realizacji:</em> {{ object.data_zamowienia }} - {{ object.data_realizacji|default_if_none:"w toku" }}</p>
+      
+    </div>
+    <div class="col-sm-7">
+      <center>
+        <h3 ><p> Wartość zamówienia:</p></h3>
+        <h2><strong style="color: red"> {{ object.get_wartosc }}</strong>  zł</h2>
+      </center>
+    </div>
+  </div>
+  <div class="row">
+    <div class="col-sm-4">
+      <div class="row">
+        <div class="col-sm-12">
+          <h3>Dane</h3>
+          <div class="list-group">
+            <a href="#" class="list-group-item"><strong>Klient: </strong> {{ object.klient }}</a>
+            <a href="#" class="list-group-item"><strong>Adres: </strong>{{ object.adres }}</a>
+            <a href="#" class="list-group-item">
+              <div class="row">
+                <div class="col-sm-12">
+                  <strong>Telefon: </strong>{{ object.telefon|default_if_none:"" }}
+                </div>
+                <div class="col-sm-6">
+                  <strong>E-mail: </strong>{{ object.email }}
+                </div>
+              </div>
+            </a>
+            <a href="#" class="list-group-item"><strong>Wysyłka: </strong>{{ object.get_wysylka_typ_display }}</a>
+            {% if object.wysylka_adres %}
+            <a href="#" class="list-group-item">
+              <p style="color: red"><small><strong>UWAGA:</strong> Inny adres wysyłki!</small></p>
+              <strong>Wysyłka adres: </strong>{{ object.wysylka_adres }}
+            </a>
+            {% endif %}
+            {% if object.opis %}
+            <a href="#" class="list-group-item"><strong>Dodatkowe informacje: </strong>{{ object.opis }}</a>
+            {% endif %}
+            {% if request.user.pracownik and object.komentarz %}
+            <a href="#" class="list-group-item"><strong>Komentarz: </strong>{{ object.komentarz }}</a>
+            {% endif %}
+            {% if object.komentarz_klient %}
+            <a href="#" class="list-group-item"><strong>Komentarz klient: </strong>{{ object.komentarz_klient }}</a>
+            {% endif %}
+          </div>
+        </div>
+      </div>
+
+      <div class="row">
+        <div class="col-sm-12">
+          <h3>
+            Status
+            {% if request.user.pracownik %}
+            <small>
+              <a class="glyphicon glyphicon-plus" href="{% url 'zamowienie-status-dodaj' object.id %}?next={{request.get_full_path}}" >dodaj</a>
+            </small> 
+            {% endif %}
+          </h3>
+          {% for status in object.zamowieniestatus_set.all %}
+          <div class="panel panel-default">
+            <div class="panel-heading">
+              <strong>{{ status.get_status_display }} </strong>
+              {% if request.user.pracownik %}
+              <a class="btn3 glyphicon glyphicon-edit" href="{% url 'zamowienie-status-edytuj' status.id %}?next={{request.get_full_path}}"> </a>
+              <a class="btn3 glyphicon glyphicon-minus" href="{% url 'zamowienie-status-usun' status.id %}"> </a>
+              {% endif %}
+            </div>
+            <div class="panel-body">
+              {% if status.komentarz %}
+              <em>{{ status.komentarz }}</em><br>
+              {% endif %}
+              {{ status.kto|default_if_none:"Automatycznie" }} - {{ status.data }}
+            </div>
+          </div>
+          {% endfor %}
+        </div>
+      </div>
+    </div>
+
+
+    <div class="col-sm-8">
+      {% if request.user.pracownik %}
+      <a class="btn3 glyphicon glyphicon-plus" href="{% url 'zamowienie-produkt-dodaj' object.id %}?next={{request.get_full_path}}" > dodaj produkt</a>
+      {% endif %}
+      <table class="table table-striped" style="text-align: left">
+        <thead>
+          <tr>
+            <th>Lp.</th>
+            <th>Nazwa</th>
+            <th>Cena</th>
+            <th>Ilość</th>
+            <th>Wartość</th>
+            {% if request.user.pracownik %}
+            <th></th>
+            {% endif %}
+          </tr>
+        </thead>
+        <tbody>
+          {% for i in object.zamowienieprodukt_set.all %}
+          <tr>
+            <td>{{ forloop.counter }}</td>
+            <td style="width: 30%">
+              {% if i.produkt.obraz %}
+              <img class="produkt" src="{{ i.produkt.obraz.url }}">
+              {% endif %}
+              <br>
+              <strong>{{ i.produkt.nazwa }} - {{ i.produkt.marka }}</strong>
+            </td>
+            <td><strong><em>{{ i.cena }}&nbspzł</em></strong></td>
+            <td>{{ i.ilosc }} </td>
+            <td>
+              {{ i.get_wartosc }}&nbspzł
+              {% if i.komentarz %}
+              <br><p>Komentarz: {{ i.komentarz }}</p>
+              {% endif %}
+            </td>
+            {% if request.user.pracownik %}
+            <td>
+              <a class="btn3 glyphicon glyphicon-edit" href="{% url 'zamowienie-produkt-edytuj' i.id %}?next={{request.get_full_path}}"> </a>
+              <a class="btn3 glyphicon glyphicon-minus" href="{% url 'zamowienie-produkt-usun' i.id %}?next={{request.get_full_path}}"> </a>
+            </td>
+            {% endif %}
+          </tr>
+          {% endfor %}
+        </tbody>
+      </table>
+    </div>
+  </div>
+</div>
+{% endblock %}

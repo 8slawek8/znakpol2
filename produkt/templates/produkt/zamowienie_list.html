@@ -1,0 +1,109 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="container-fluid">
+  <div class="row">
+    <div class="col-sm-2">
+      <div style="position: flexi">
+        {% include "default_filter_form.html" %}
+      </div>
+    </div>
+    <div class="col-sm-10">
+      <div class="row">
+        <div class="col-sm-12">
+          <div class="panel panel-default">
+            <div class="panel-heading"><strong>
+                <center><h2><p><em> Zamówienia </em></p></h2></center>
+                {% if request.user.pracownik %}
+                <a class="btn2 btn-success glyphicon glyphicon-plus" href="{% url 'zamowienie-dodaj' %}?next={{ request.get_full_path }}"> dodaj zamówienie</a>
+                {% endif %}
+        </div>
+          <div class="panel-body">
+                <table class="table table-striped" style="text-align: left">
+                  <thead>
+                    <tr>
+                      <th>Lp.</th>
+                      <th>Numer</th>
+                      <th>Klient</th>
+                      <th>Wysyłka</th>
+                      <th>Dodatkowe informacje</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    {% for i in object_list %}
+                    <tr style="font-weight: normal">
+                      <td>{{ forloop.counter }}</td>
+                      <td>
+                        <div class="dropdown">
+                          <button class="btnd btn-primary dropdown-toggle" type="button" data-toggle="dropdown">{{ i.nr_zamowienia }}
+                            <span class="caret"></span></button>
+                          <ul class="dropdown-menu dropdown-menud">
+                            <li><a href="{% url 'zamowienie-szczegoly' i.id %}">szczegóły</a></li>
+                            {% if request.user.pracownik %}
+                            <li><a href="{% url 'zamowienie-edytuj' i.id %}?next={{ request.get_full_path }}"> edytuj</a></li>
+                            <li><a href="{% url 'zamowienie-usun' i.id %}?next={{ request.get_full_path }}"> usuń</a></li>
+                            {% endif %}
+                          </ul>
+                        </div> 
+                        - <span style="color: {{ i.zrealizowane|yesno:'green,red' }}">{{ i.zrealizowane|yesno:'zrealizowana,niezrealizowana' }}</span>
+                        {% if request.user.pracownik and not i.zrealizowane %}
+                        <a class="btn3 glyphicon glyphicon-ok" href="{% url 'zamowienie-zrealizowane' i.id %}"> </a>
+                        {% endif %}
+                        <br>
+                        Status: {{ i.get_status.get_status_display|default:"-" }}
+
+                        <br />
+                      </td>
+                      <td>
+                        <div class="list-group">
+                          <a href="#" class="list-group-item"><strong>Klient: </strong> {{ i.klient }}</a>
+                          <a href="#" class="list-group-item"><strong>Adres: </strong>{{ i.adres }}</a>
+                          <a href="#" class="list-group-item">
+                            <div class="row">
+                              <div class="col-sm-6">
+                                <strong>Telefon: </strong>{{ i.telefon|default_if_none:"" }}
+                              </div>
+                              <div class="col-sm-6">
+                                <strong>E-mail: </strong>{{ i.email }}
+                              </div>
+                            </div>
+                          </a>
+                        </div>
+                      </td>
+                      <td>
+                        <strong>{{ i.get_wysylka_typ_display }}</strong>
+                        {% if i.wysylka_adres %}
+                        <br>
+                        <p style="color: red"><small><strong>UWAGA:</strong> Inny adres wysyłki!</small></p>
+                        <p> Adres: {{ i.wysylka_adres }}</p>
+                        {% endif %}
+                      </td>
+                      <td>
+                        <p><small>Wartość zamówienia: {{ i.get_wartosc }} zł</small></p>
+                        {% if i.opis %}
+                        <p><small><strong>Opis:</strong> {{ i.opis }}</small></p>
+                        {% endif %}
+                        {% if i.komentarz %}
+                        <p>
+                        <small>
+                          <strong>Komentarz:</strong> {{ i.komentarz }}<br>
+                          <span style="color: red">Nie widoczny dla klienta</span>
+                        </small>
+                        </p>
+                        {% endif %}
+                        {% if i.komentarz_klient %}
+                        <p><small><strong>Komentarz klienta:</strong> {{ i.komentarz_klient }}</small></p>
+                        {% endif %}
+                      </td>
+                    </tr>
+                    {% endfor %}
+                  </tbody>
+                </table>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+{% endblock %}

@@ -1,0 +1,50 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="container-fluid">
+  <div class="row">
+    <div class="col-sm-12">
+      <div class="panel panel-default">
+        <div class="panel-heading">
+          <strong>
+            <center><h2><p><em> Stanowisko </em></p></h2></center>
+            <a class="btn3 glyphicon glyphicon-plus" href="{% url 'stanowisko-dodaj' %}"> dodaj stanowisko</a>
+          </strong>
+        </div>
+        <div class="panel-body">
+
+          <table class="table table-striped" >
+            <thead>
+              <tr>
+                <th>Lp.</th>
+                <th>Nazwa</th>
+                <th>Pracownik</th>
+              </tr>
+            </thead>
+            <tbody>
+              {% for i in object_list %}
+              <tr style="text-align: left">
+                <td>{{ forloop.counter }}</td>
+                <td>
+                  <div class="dropdown">
+                    <button class="btnd btn-primary dropdown-toggle" type="button" data-toggle="dropdown">
+                      <strong>{{ i.name }}</strong>
+                      <span class="caret"></span>
+                    </button>
+                    <ul class="dropdown-menu dropdown-menud">
+                      <li><a class="glyphicon glyphicon-edit" href="{% url 'stanowisko-edytuj' i.id %}"> edytuj stanowisko</a></li>
+                      <li><a class="glyphicon glyphicon-minus" href="{% url 'stanowisko-usun' i.id %}"> usuń stanowisko</a></li>
+                    </ul>
+                  </div> 
+                </td>
+                <td>{% for p in i.pracownik_set.all %}{{ p.user.get_nazwa }}; {% endfor %}<td>
+              </tr>
+              {% endfor %}
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+{% endblock %}

@@ -1,0 +1,80 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="container-fluid">
+  <div>
+    {% if form.non_field_errors %}
+    {% for message in form.non_field_errors %}
+    <div class="alert alert-danger alert-dismissable">
+      <a href="#" class="close" data-dismiss="alert" aria-label="close">×</a>
+      <h5 class="text-center"><strong>{{ message }}</strong></h5>
+    </div>
+    {% endfor %}
+    {% endif %}
+    {% if form.messages_errors %}
+    {% for message in form.messages_errors %}
+    <div class="alert alert-danger alert-dismissable">
+      <a href="#" class="close" data-dismiss="alert" aria-label="close">×</a>
+      <h5 class="text-center"><strong>{{ message }}</strong></h5>
+    </div>
+    {% endfor %}
+    {% endif %}
+    {% if not form.klient %}
+    <div class="alert alert-info alert-dismissable">
+      <h5 class="text-center"><strong>Uzupełnij dane tylko w przypadku gdy są różne od danych profilowych</strong></h5>
+    </div>
+    {% endif %}
+  </div> 
+  <form id='x' action="#" method="POST" enctype='multipart/form-data'>
+    {% csrf_token %}
+    <div class="row" style="padding-top: 2%">
+      <div class="col-sm-2"></div>
+      <div class="col-sm-8">
+        <div class="row">
+          <div class="col-sm-4">
+            {% if form.klient %}
+            {% include "default_field_form.html" with field=form.klient %}
+            {% endif %}
+            {% include "default_field_form.html" with field=form.adres %}
+            {% include "default_field_form.html" with field=form.email %}
+            {% include "default_field_form.html" with field=form.telefon %}
+          </div>
+          <div class={% if request.user.pracownik %}"col-sm-2"{% else %}"col-sm-4"{% endif %}>
+            {% if 'nr_zamowienia' in form.fields %}
+            {% include "default_field_form.html" with field=form.nr_zamowienia %}
+            {% endif %}
+            {% include "default_field_form.html" with field=form.wysylka_typ %}
+            {% include "default_field_form.html" with field=form.wysylka_adres %}
+            {% if 'zrealizowane' in form.fields %}
+            {% include "default_field_form.html" with field=form.zrealizowane %}
+            {% endif %}
+          </div>
+          {% if request.user.pracownik %}
+          <div class="col-sm-3">
+            {% include "default_field_form.html" with field=form.komentarz %}
+          </div>
+          <div class="col-sm-3">
+            {% include "default_field_form.html" with field=form.opis %}
+          </div>
+          {% else %}
+          <div class="col-sm-4">
+            {% include "default_field_form.html" with field=form.komentarz_klient %}
+          </div>
+          {% endif %}
+        </div>
+        <div class="row">
+          <div class="col-sm-6">
+            <button type="submit" class="btn1 btn-block btn-primary">Zapisz</button>
+          </div>
+          <div class="col-sm-6">
+            <a class="btn1 btn-block btn-danger" href="javascript:history.back()"><center>Anuluj</center></a>
+          </div>
+        </div>
+      </div>
+      <div class="col-sm-2"></div>
+    </div>
+  </form>
+</div>
+{% block footer %}
+{% endblock %}
+{% endblock %}

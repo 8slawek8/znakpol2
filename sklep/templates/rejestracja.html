@@ -1,0 +1,57 @@
+{% extends "base.html" %}
+{% block content %}
+<div class="container-fluid" style="padding-top: 5%; padding-bottom: 5%">
+<div>
+    {% if form.non_field_errors %}
+    {% for message in form.non_field_errors %}
+    <div class="alert alert-danger alert-dismissable">
+      <a href="#" class="close" data-dismiss="alert" aria-label="close">×</a>
+      <h5 class="text-center"><strong>{{ message }}</strong></h5>
+    </div>
+    {% endfor %}
+    {% endif %}
+    {% if form.messages_errors %}
+    {% for message in form.messages_errors %}
+    <div class="alert alert-danger alert-dismissable">
+      <a href="#" class="close" data-dismiss="alert" aria-label="close">×</a>
+      <h5 class="text-center"><strong>{{ message }}</strong></h5>
+    </div>
+    {% endfor %}
+    {% endif %}
+  </div>
+  <div class="row">
+    <div class="col-sm-3"></div>
+    <div class="col-sm-6">
+    <h1><center>Rejestracja</center></h1>
+      <form id='x' action="{% url 'rejestracja' %}" method="POST" enctype='multipart/form-data'>
+        {% csrf_token %}
+        <div class="row">
+          <div class="col-sm-4">
+            {% include "default_field_form.html" with field=form.username %}
+            {% include "default_field_form.html" with field=form.first_name %}
+            {% include "default_field_form.html" with field=form.last_name %}
+          </div>
+          <div class="col-sm-4">
+            {% include "default_field_form.html" with field=form.adres %}
+            {% include "default_field_form.html" with field=form.email %}
+            {% include "default_field_form.html" with field=form.telefon %}
+          </div>
+          <div class="col-sm-4">
+            {% include "default_field_form.html" with field=form.haslo %}
+            {% include "default_field_form.html" with field=form.haslo_powtorz %}
+          </div>
+        </div>
+        <div class="row">
+          <div class="col-sm-6">
+            <button type="submit" class="btn1 btn-block btn-primary">Zarejestruj</button>
+          </div>
+          <div class="col-sm-6">
+            <a class="btn1 btn-block btn-danger" href="javascript:history.back()"><center>Anuluj</center></a>
+          </div>
+        </div>
+      </form>
+    </div>
+    <div class="col-sm-3"></div>
+  </div>
+</div>
+{% endblock %}

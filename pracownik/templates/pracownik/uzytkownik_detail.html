@@ -1,0 +1,62 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="container-fluid" >
+  <div class="row" style="padding-bottom: 5%; padding-top: 5%">
+    <div class="col-sm-12">
+      <center>
+        <h2 style="display: inline"> Użytkownik {{ object.get_nazwa }} </h2>
+        <a class="btn3 glyphicon glyphicon-edit" href="{% url 'uzytkownik-edytuj' object.id %}"> </a>
+        <a class="btn3" href="{% url 'zmien-haslo' object.id %}?next={{ requset.get_full_path }}"> zmień hasło</a>
+        {% if request.user.is_superuser %}
+        <a class="btn3 glyphicon glyphicon-minus" href="{% url 'uzytkownik-usun' object.id %}"> </a>
+        {% endif %}
+      </center>
+    </div>
+  </div>
+  <div class="row">
+    <div class="col-sm-6">
+        <h3 ><p> Dane podstawowe</p></h3>
+        <div class="list-group" style="tekst-align: left">
+          <a href="#" class="list-group-item"><strong>Login: </strong> {{ object.username }}</a>
+          <a href="#" class="list-group-item"><strong>Imię: </strong> {{ object.first_name }}</a>
+          <a href="#" class="list-group-item"><strong>Nazwisko: </strong> {{ object.last_name }}</a>
+          <a href="#" class="list-group-item"><strong>Adres: </strong>{{ object.adres }}</a>
+          <a href="#" class="list-group-item"><strong>Telefon: </strong>{{ object.telefon|default_if_none:"" }}</a>
+          <a href="#" class="list-group-item"><strong>E-mail: </strong>{{ object.email }}</a>
+        </div>
+    </div>
+    <div class="col-sm-6">
+      {% if request.user.is_superuser %}
+      <center>
+        <h3 ><p> Dane dodatkowe</p></h3>
+        <div class="panel-group">
+          <div class="panel panel-default">
+            <div class="panel-heading"><strong>Pracownik</strong></div>
+            <div class="panel-body">
+              {% if object.pracownik %}
+              <div class="dropdown">
+                <button class="btnd btn-primary dropdown-toggle" type="button" data-toggle="dropdown">
+                  <strong>{{ object.pracownik.stanowisko }}</strong>
+                  <span class="caret"></span>
+                </button>
+                <ul class="dropdown-menu dropdown-menud">
+                  <li><a class="glyphicon glyphicon-edit" href="{% url 'pracownik-edytuj' object.pracownik.id %}"> edytuj stanowisko</a></li>
+                  <li><a class="glyphicon glyphicon-minus" href="{% url 'pracownik-usun' object.pracownik.id %}"> usuń stanowisko</a></li>
+                </ul>
+              </div> 
+              {% else %}
+              <a class="btn3 glyphicon glyphicon-plus" href="{% url 'pracownik-dodaj' %}"> dodaj stanowisko</a></li>
+            {% endif %}
+            </div>
+          </div>
+          <div class="panel panel-default">
+            <div class="panel-heading"><strong>Klient</strong></div>
+            <div class="panel-body">{{ object.klient|yesno:"TAK,NIE" }}</div>
+          </div>
+        </div>
+        {% endif %}
+    </div>
+  </div>
+</div>
+{% endblock %}

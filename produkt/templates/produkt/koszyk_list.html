@@ -1,0 +1,61 @@
+{% extends "base.html" %}
+
+{% block content %}
+  <div class="well well-sm bg-1">
+    <center><h2><em> Twój koszyk </em></h2</center>
+    </div>
+<div class="container-fluid">
+<div class="row">
+  <div class="col-sm-3">
+
+    <center style="padding: 10%">
+      <h3 ><p> Wartość twojego zamówienia:</p></h3>
+      <h2><strong style="color: red"> {{ object_list.suma }}</strong>  zł</h2>
+    </center>
+    <br>
+    <a href="{% url 'zamowienie-dodaj' %}">
+      <button type="button" class="btn2 btn-success btn-block">Zamów</button>
+    </a> 
+  </div>
+  <div class="col-sm-6">
+    <table class="table table-striped">
+      <thead>
+        <tr>
+          <th>Lp.</th>
+          <th>Nazwa</th>
+          <th>Cena</th>
+          <th>Ilość</th>
+          <th>Wartość</th>
+          <th colspace=2></th>
+        </tr>
+      </thead>
+      <tbody>
+        {% for i in object_list %}
+        <tr>
+          <td>{{ forloop.counter }}</td>
+          <td style="width: 30%">
+            {% if i.obraz %}
+            <img class="produkt" src="{{ i.obraz.url }}">
+            {% endif %}
+            <br>
+            <a href="{% url 'produkt-szczegoly' i.id %}"><strong>{{ i.nazwa }}</strong></a>
+          </td>
+          <td><strong><em>{{ i.cena }}&nbspzł</em></strong></td>
+          <td>{{ i.ilosc }} </td>
+          <td>{{ i.wartosc }} </td>
+          <td><a class="btn3 glyphicon glyphicon-plus" data-toggle="tooltip" title="dodaj do koszyka" href="{% url 'koszyk-dodaj' i.id %}?next={{request.get_full_path}}"> </a></td>
+          <td><a class="btn3 glyphicon glyphicon-minus" data-toggle="tooltip" title="usuń z koszyka" href="{% url 'koszyk-usun' i.id %}?next={{request.get_full_path}}"> </a></td>
+        </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  </div>
+  <div class="col-sm-3">
+    <center style="padding: 20%">
+      <h3 ><p> Rezygnujesz z zakupów ?</p></h3>
+      <a class="btn2 btn-danger glyphicon glyphicon-minus" href="{% url 'koszyk-usun-calosc' %}"> usuń koszyk</a>
+    </center>
+  </div>
+</div>
+</div>
+{% endblock %}

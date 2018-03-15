@@ -1,0 +1,54 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="container-fluid">
+  <div class="row">
+    <div class="col-sm-6">
+      <h4> Odbiorcza </h4>
+      <table class="table table-striped" style="text-align: left">
+        <thead>
+          <tr>
+            <th>Lp.</th>
+            <th>Temat</th>
+            <th>Nadawca</th>
+          </tr>
+        </thead>
+        <tbody>
+          {% for i in object_list_odbiorcza %}
+          <tr>
+            <td>{{ forloop.counter }}</td>
+            <td>
+              <a {% if not i.odczytana %}style="font-weight: bold"{% endif %} href="{% url 'wiadomosc-szczegoly' i.id %}">{{ i.temat|default:"-brak-" }}</a>
+            </td>
+            <td>{{ i.nadawca|default_if_none:"-brak-" }}</td>
+          </tr>
+          {% endfor %}
+        </tbody>
+      </table>
+    </div>
+    <div class="col-sm-6">
+      <h4> Nadawcza </h4>
+      <a class="btn3 glyphicon glyphicon-plus" href="{% url 'wiadomosc-dodaj' %}"> napisz wiadomość </a>
+      <table class="table table-striped" style="text-align: left">
+        <thead>
+          <tr>
+            <th>Lp.</th>
+            <th>Temat</th>
+            <th>Odbiorca</th>
+          </tr>
+        </thead>
+        <tbody>
+          {% for i in object_list_nadawcza %}
+          <tr>
+            <td>{{ forloop.counter }}</td>
+            <td>
+              <a href="{% url 'wiadomosc-szczegoly' i.id %}">{{ i.temat|default:"-brak-" }}</a>
+            </td>
+            <td>{{ i.odbiorca_list.all|join:"; " }}</td>
+          </tr>
+          {% endfor %}
+        </tbody>
+      </table>
+    </div>
+  </div>
+{% endblock %}

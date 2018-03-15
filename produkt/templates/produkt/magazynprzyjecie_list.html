@@ -1,0 +1,59 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="container-fluid">
+  <div class="row">
+    <div class="col-sm-2">
+      {% include "default_filter_form.html" %}
+    </div>
+    <div class="col-sm-10">
+      <div class="panel panel-default">
+        <div class="panel-heading"><strong>
+            <center><h2><p><em> Lista przyjęć towarów </em></p></h2></center>
+            {% if request.user.pracownik.stanowisko.name == 'Magazynier' %}
+            <a class="btn2 btn-success glyphicon glyphicon-plus" href="{% url 'magazyn-przyjecie-dodaj' %}"> dodaj przyjęcie towaru </a>
+            {% endif %}
+          </strong></div>
+          <div class="panel-body">
+            <table class="table table-striped">
+              <thead>
+                <tr style="text-align: center">
+                  <th>Lp.</th>
+                  <th>Produkt</th>
+                  <th>Ilość</th>
+                  <th>Przyjmujący / Data</th>
+                </tr>
+              </thead>
+              <tbody>
+                {% for i in object_list %}
+                <tr>
+                  <td>{{ forloop.counter }}</td>
+                  <td style="width: 30%">
+                    {% if i.obraz %}
+                    <img class="produkt" src="{{ i..magazyn.produkt.obraz.url }}">
+                    {% endif %}
+                    {% if request.user.pracownik.stanowisko.name == 'Magazynier' %}
+                    <div class="dropdown">
+                      <button class="btnd btn-primary dropdown-toggle" type="button" data-toggle="dropdown">{{ i.magazyn.produkt }}
+                        <span class="caret"></span></button>
+                      <ul class="dropdown-menu dropdown-menud">
+                        <li><a href="{% url 'magazyn-przyjecie-edytuj' i.id %}">edytuj</a></li>
+                        <li><a href="{% url 'magazyn-przyjecie-usun' i.id %}">usuń</a></li>
+                      </ul>
+                    </div> 
+                    {% else %}
+                    <strong>{{ i.magazyn.produkt }}</strong>
+                    {% endif %}
+                  </td>
+                  <td>{{ i.ilosc }}</td>
+                  <td>{{ i.kto }} <br> {{ i.kiedy }}</td>
+                </tr>
+                {% endfor %}
+              </tbody>
+            </table>
+          </div>
+      </div>
+    </div>
+  </div>
+</div>
+{% endblock %}

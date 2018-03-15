@@ -1,0 +1,34 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="container">
+  <div>
+    {{ form.non_field_errors }}
+    {{ form.message.errors }}
+  </div>
+  <form id='x' action="#" method="POST" enctype='multipart/form-data'>
+    {% csrf_token %}
+    <div class="row">
+      <div class="col-sm-6">
+        {% include "default_field_form.html" with field=form.nazwa %}
+        {% include "default_field_form.html" with field=form.marka %}
+        {% include "default_field_form.html" with field=form.cena %}
+        {% include "default_field_form.html" with field=form.obraz %}
+      </div>
+      <div class="col-sm-6">
+        {% include "default_field_form.html" with field=form.opis %}
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-sm-6">
+        <button type="submit" class="btn1 btn-block btn-primary">Zapisz</button>
+      </div>
+      <div class="col-sm-6">
+        <a class="btn1 btn-block btn-danger" href="javascript:history.back()"><center>Anuluj</center></a>
+      </div>
+    </div>
+  </form>
+</div>
+{% block footer %}
+{% endblock %}
+{% endblock %}

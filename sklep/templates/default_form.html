@@ -1,0 +1,40 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="container">
+  <div>
+    {% if form.non_field_errors %}
+    {% for message in form.non_field_errors %}
+    <div class="alert alert-danger alert-dismissable">
+      <a href="#" class="close" data-dismiss="alert" aria-label="close">×</a>
+      <h5 class="text-center"><strong>{{ message }}</strong></h5>
+    </div>
+    {% endfor %}
+    {% endif %}
+    {% if form.messages_errors %}
+    {% for message in form.messages_errors %}
+    <div class="alert alert-danger alert-dismissable">
+      <a href="#" class="close" data-dismiss="alert" aria-label="close">×</a>
+      <h5 class="text-center"><strong>{{ message }}</strong></h5>
+    </div>
+    {% endfor %}
+    {% endif %}
+  </div>
+  <form id='x' action="#" method="POST" enctype='multipart/form-data'>
+    {% csrf_token %}
+    {% for field in form %}
+    {% include "default_field_form.html" %}
+    {% endfor %}
+    <div class="row">
+      <div class="col-sm-6">
+        <button type="submit" class="btn1 btn-block btn-primary">Zapisz</button>
+      </div>
+      <div class="col-sm-6">
+        <a class="btn1 btn-block btn-danger" href="javascript:history.back()"><center>Anuluj</center></a>
+      </div>
+    </div> 
+  </form>
+</div>
+{% block footer %}
+{% endblock %}
+{% endblock %}

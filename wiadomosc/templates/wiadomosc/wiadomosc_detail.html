@@ -1,0 +1,21 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="container-fluid">
+  <h3>Wiadomość </h3>
+  <a class="btn2 btn-primary glyphicon glyphicon-minus" href="{% url 'wiadomosc-odpowiedz' object.id %}"> odpowiedz</a>
+  {# <a class="btn2 btn-danger glyphicon glyphicon-minus" href="{% url 'wiadomosc-usun' object.id %}"> usuń</a> #}
+  <div class="jumbotron">
+  <h3>Do: {{ object.odbiorca_list.all|join:"; " }}</h3>
+    <h1>Temat: {{ object.temat }}</h1>
+    <p>{{ object.tresc|safe }}</p>
+    {% if object.zalacznik %}
+    <a href="{{ object.zalacznik.url }}" class="glyphicon glyphicon-paperclip"> {{ object.zalacznik.name }}</a> <br><small>{{ object.zalacznik.size }}</small></span>
+    {% endif %}
+  </div>
+  <h3>Od: {{ object.nadawca|default_if_none:"-brak-" }}</h3>
+  <p>{{ object.data_nadania }}</p>
+
+</div>
+
+{% endblock %}

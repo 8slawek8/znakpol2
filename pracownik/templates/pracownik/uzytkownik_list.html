@@ -1,0 +1,88 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="container-fluid">
+  <div class="row">
+    <div class="col-sm-12">
+      <div class="panel panel-default">
+        <div class="panel-heading">
+          <strong>
+            <center><h2><p><em> Użytkownik </em></p></h2></center>
+            {% if request.user.is_superuser %}
+            <a class="btn3 glyphicon glyphicon-plus" href="{% url 'uzytkownik-dodaj' %}"> dodaj użytkownika</a>
+            {% endif %}
+          </strong>
+        </div>
+        <div class="panel-body">
+
+
+          <table class="table table-striped" style="text-align: left">
+            <thead>
+              <tr>
+                <th>Lp.</th>
+                <th>Użytkownik</th>
+                <th>Dane</th>
+                <th>Stanowisko</th>
+                <th>Klient</th>
+                <th></th>
+              </tr>
+            </thead>
+            <tbody>
+              {% for i in object_list %}
+              <tr>
+                <td>{{ forloop.counter }}</td>
+                <td>
+                  {% if request.user.is_superuser %}
+                  <div class="dropdown">
+                    <button class="btnd btn-primary dropdown-toggle" type="button" data-toggle="dropdown">
+                      <strong>{{ i.get_nazwa }}</strong>
+                      <span class="caret"></span>
+                    </button>
+                    <ul class="dropdown-menu dropdown-menud">
+                      <li><a href="{% url 'uzytkownik-szczegoly' i.id %}">szczegóły</a></li>
+                      <li><a class="glyphicon glyphicon-edit" href="{% url 'uzytkownik-edytuj' i.id %}"> edytuj</a></li>
+                      <li><a class="glyphicon glyphicon-minus" href="{% url 'uzytkownik-usun' i.id %}"> usuń</a></li>
+                    </ul>
+                  </div> 
+                  {% else %}
+                  <strong>{{ i.get_nazwa }}</strong>
+                  {% endif %}
+                </td>
+                <td>
+                  <div class="list-group">
+                    <a href="#" class="list-group-item"><strong>Adres: </strong>{{ i.adres }}</a>
+                    <a href="#" class="list-group-item"><strong>Telefon: </strong>{{ i.telefon|default_if_none:"" }}</a>
+                    <a href="#" class="list-group-item"><strong>E-mail: </strong>{{ i.email }}</a>
+                  </div>
+                </td>
+                <td>
+                  {% if request.user.is_superuser %}
+                  {% if i.pracownik %}
+                  <div class="dropdown">
+                    <button class="btnd btn-primary dropdown-toggle" type="button" data-toggle="dropdown">
+                      <strong>{{ i.pracownik.stanowisko }}</strong>
+                      <span class="caret"></span>
+                    </button>
+                    <ul class="dropdown-menu dropdown-menud">
+                      <li><a class="glyphicon glyphicon-edit" href="{% url 'pracownik-edytuj' i.pracownik.id %}"> edytuj stanowisko</a></li>
+                      <li><a class="glyphicon glyphicon-minus" href="{% url 'pracownik-usun' i.pracownik.id %}"> usuń stanowisko</a></li>
+                    </ul>
+                  </div> 
+                  {% else %}
+                  <a class="btn3 glyphicon glyphicon-plus" href="{% url 'pracownik-dodaj' %}"> przydziel stanowisko</a></li>
+                {% endif %}
+                {% else %}
+                <strong>{{ i.pracownik|default_if_none:"-" }}</strong>
+                {% endif %}
+                </td>
+                <td><strong style="color: {{i.klient|yesno:"green,red"}}">{{ i.klient|yesno:"TAK,NIE" }}</strong></td>
+              </tr>
+              {% endfor %}
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+{% endblock %}
